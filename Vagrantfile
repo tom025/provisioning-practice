@@ -10,6 +10,12 @@ Vagrant::Config.run do |config|
   config.ssh.private_key_path = 'keys/box/id_rsa'
   config.vm.box = "provisioning-practice-chef-server"
 
+  config.vm.provision :chef_solo do |chef_solo|
+    chef_solo.roles_path = 'roles'
+
+    chef_solo.add_role('chef-server')
+  end
+
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
