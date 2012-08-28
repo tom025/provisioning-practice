@@ -12,15 +12,17 @@ Vagrant::Config.run do |config|
 
   config.vm.define :chef_server do |chef_server|
 
+    chef_server.vm.network :hostonly, '192.168.2.10'
+
     chef_server.vm.provision :chef_solo do |chef_solo|
       chef_solo.roles_path = 'roles'
 
       chef_solo.json = {
         'chef_server' => {
-        'server_url' => 'http::/localhost:4000'
+          'server_url' => 'http::/localhost:4000'
         },
         'lsb' => {
-        'codename' => 'squeeze'
+          'codename' => 'squeeze'
         }
       }
 
@@ -28,6 +30,17 @@ Vagrant::Config.run do |config|
     end
   end
 
+  config.vm.define :chef_client do |chef_server|
+
+    chef_server.vm.network :hostonly, '192.168.2.11'
+
+    chef_server.vm.provision :chef_client do |chef_client|
+      chef_client.chef_server_url = 'http://192.168.2.10:4000'
+      chef_client.validation_key_path = 'keys/chef/validation.pem'
+
+      chef_client.add_recipe('base')
+    end
+  end
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
