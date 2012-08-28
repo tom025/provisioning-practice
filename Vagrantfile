@@ -10,20 +10,24 @@ Vagrant::Config.run do |config|
   config.ssh.private_key_path = 'keys/box/id_rsa'
   config.vm.box = "debian-6.0.5-x64-chef"
 
-  config.vm.provision :chef_solo do |chef_solo|
-    chef_solo.roles_path = 'roles'
+  config.vm.define :chef_server do |chef_server|
 
-    chef_solo.json = {
-      'chef_server' => {
+    chef_server.vm.provision :chef_solo do |chef_solo|
+      chef_solo.roles_path = 'roles'
+
+      chef_solo.json = {
+        'chef_server' => {
         'server_url' => 'http::/localhost:4000'
-      },
-      'lsb' => {
+        },
+        'lsb' => {
         'codename' => 'squeeze'
+        }
       }
-    }
 
-    chef_solo.add_role('chef-server')
+      chef_solo.add_role('chef-server')
+    end
   end
+
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
