@@ -8,10 +8,19 @@ Vagrant::Config.run do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.ssh.private_key_path = 'keys/box/id_rsa'
-  config.vm.box = "provisioning-practice-chef-server"
+  config.vm.box = "debian-6.0.5-x64-chef"
 
   config.vm.provision :chef_solo do |chef_solo|
     chef_solo.roles_path = 'roles'
+
+    chef_solo.json = {
+      'chef_server' => {
+        'server_url' => 'http::/localhost:4000'
+      },
+      'lsb' => {
+        'codename' => 'squeeze'
+      }
+    }
 
     chef_solo.add_role('chef-server')
   end
